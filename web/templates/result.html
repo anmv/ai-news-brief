@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %} - Briefing Results{% endblock %}
+
+{% block content %}
+<div>
+    <p>
+        <a href="{{ url_for('index') }}" class="button" style="font-size: 0.9rem;">← Back to Home</a>
+    </p>
+
+    <h2>AI Briefing - {{ date }}</h2>
+    
+    {% if summary %}
+        <div style="background-color: #f8f8f8; padding: 1rem; border-radius: 4px; margin: 1rem 0; white-space: pre-wrap;">
+            {{ summary | safe }}
+        </div>
+    {% else %}
+        <p>No summary was generated. Please try again.</p>
+    {% endif %}
+    
+    {% if article_links %}
+        <div style="margin-top: 2rem;">
+            <h3>Source Articles:</h3>
+            <ul>
+                {% for link in article_links %}
+                    <li><a href="{{ link }}" target="_blank">{{ link }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+    
+    {% if newsletter_url %}
+        <p>
+            <small>Source newsletter: <a href="{{ newsletter_url }}" target="_blank">{{ newsletter_url }}</a></small>
+        </p>
+    {% endif %}
+</div>
+{% endblock %}

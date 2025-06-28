@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %} - Home{% endblock %}
+
+{% block content %}
+<div style="text-align: center; margin: 3rem 0;">
+    <h2>Generate AI News Briefing</h2>
+    <p>This tool scrapes the latest AI news, digests the content of multiple articles, and generates a strategic summary.</p>
+    
+    {% if has_api_key %}
+        <p style="margin: 2rem 0;">
+            <a href="{{ url_for('generate_briefing') }}" class="button">Generate Today's Briefing</a>
+        </p>
+    {% else %}
+        <div style="background-color: #fff0f0; color: #a00; padding: 1rem; border-radius: 4px; margin: 2rem 0; text-align: left;">
+            <strong>API Key Required</strong>
+            <p>To use this tool, you need to add a Gemini API key to your environment.</p>
+            <p>Create a <code>.env</code> file in the project root with: <code>GEMINI_API_KEY=your_key_here</code></p>
+            <p>Then restart the web server.</p>
+        </div>
+    {% endif %}
+    
+    <div style="max-width: 600px; margin: 0 auto; text-align: left;">
+        <h3>How It Works:</h3>
+        <ol>
+            <li>Scrapes the latest TLDR AI Newsletter</li>
+            <li>Extracts and reads relevant articles</li>
+            <li>Uses AI to create a strategic summary</li>
+            <li>Presents findings with business insights</li>
+        </ol>
+    </div>
+</div>
+{% endblock %}

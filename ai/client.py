@@ -5,15 +5,25 @@ import google.generativeai as genai
 from dotenv import load_dotenv
 from config import GEMINI_MODEL, API_KEY_ENV_VAR
 
+class ApiKeyError(Exception):
+    """Exception raised when API key is missing."""
+    pass
+
 class AIClient:
     """
     Handle AI API configuration and request management.
     """
     
-    def __init__(self):
-        """Initialize the AI client and configure it."""
+    def __init__(self, web_mode=False):
+        """
+        Initialize the AI client and configure it.
+        
+        Args:
+            web_mode: If True, throws exceptions instead of calling exit()
+        """
         self.model = None
         self.configured = False
+        self.web_mode = web_mode
         self.configure()
     
     def configure(self):
@@ -21,15 +31,20 @@ class AIClient:
         Configure API key and model.
         
         Raises:
-            SystemExit: If no API key is found
+            ApiKeyError: If no API key is found (in web mode)
+            SystemExit: If no API key is found (in CLI mode)
         """
         load_dotenv()
         api_key = os.getenv(API_KEY_ENV_VAR)
         
         if not api_key:
-            print(f"ERROR: No API key found!")
-            print(f"Create a .env file with {API_KEY_ENV_VAR}=your_key_here")
-            exit()
+            error_msg = f"ERROR: No API key found! Create a .env file with {API_KEY_ENV_VAR}=your_key_here"
+            print(error_msg)
+            
+            if self.web_mode:
+                raise ApiKeyError(error_msg)
+            else:
+                exit()
         
         genai.configure(api_key=api_key)
         self.model = genai.GenerativeModel(GEMINI_MODEL)

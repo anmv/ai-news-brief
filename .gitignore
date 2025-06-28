@@ -51,6 +51,9 @@ Thumbs.db
 # Logs
 *.log
 
+# Flask session files
+flask_session/
+
 # Environment variables
 .env.local
 .env.development.local

@@ -47,9 +47,17 @@ pip install -r requirements.txt
      ```
 
 **4. Run the tool:**
+
+Command line version:
 ```bash
 python main.py
 ```
+
+Web interface version:
+```bash
+python web_app.py
+```
+Then open `http://127.0.0.1:5000` in your browser.
 
 ## Example Output
 
