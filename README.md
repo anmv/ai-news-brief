@@ -1,10 +1,10 @@
-# AI News Briefing Engine
+# Strategic AI News Briefing for Applied Science & Data Science Managers
 
-A Python tool that automatically scrapes the latest AI news, digests the content of multiple articles, and generates strategic summaries tailored for Applied Science Managers. Available as both a command-line tool and web interface.
+A Python tool that transforms generic TLDR AI newsletters into strategic briefings tailored specifically for Applied Science Managers and Data Science Managers. Get business implications, team impact, and actionable insights from the latest AI developments. Available as both a command-line tool and web interface.
 
 ## Problem Statement
 
-Technology leaders and applied scientists are inundated with a high volume of technical articles, newsletters, and research papers daily. It's challenging to stay current with relevant advancements while distinguishing signal from noise. This tool addresses this information overload by automating the process of retrieval and analysis, providing a high-level briefing focused on practical application and strategic value.
+Applied Science Managers and Data Science Managers face a critical challenge: TLDR AI newsletters cover everything, but most content isn't strategically relevant for management decision-making. Generic AI news lacks the business context, implementation feasibility analysis, and team impact insights that managers need for resource allocation, technology adoption, and competitive positioning decisions. This tool addresses this gap by transforming generic AI news into management-focused strategic briefings.
 
 ## How It Works (Methodology)
 
@@ -157,15 +157,14 @@ Successfully deployed to AWS Lambda with **complete end-to-end functionality**:
 - Content sanitization for AI-generated text
 - Proper HTTP response formatting for API Gateway
 
-**⚠️ KNOWN ISSUE:**
-- **Button Navigation**: Clicking buttons on the home page returns `{"message":"Forbidden"}` error
-- **Workaround**: Access `/generate` endpoint directly: https://zhqwd82ijl.execute-api.us-east-1.amazonaws.com/Prod/generate
-- **Status**: Core AI functionality works perfectly when accessed directly
-
 ## Features
 
-- **Intelligent Article Selection**: Uses AI to choose the most relevant articles from each newsletter
-- **Strategic Focus**: Summaries emphasize business impact, technical feasibility, and practical applications
+- **Management-Focused AI Analysis**: Transforms generic TLDR content into strategic briefings for Applied Science & Data Science Managers
+- **Business Context**: Each development includes Strategic Impact, Management Implications, Implementation Reality, and Competitive Positioning
+- **Action-Oriented**: Provides specific recommendations (explore, invest, ignore, prepare) for busy managers
+- **Resource Allocation Insights**: Timeline, feasibility, and team impact analysis for strategic planning
+- **Professional Web Interface**: Beautiful gradient card design with HTML-formatted AI summaries
 - **Dual Interface**: Both command-line and web-based interfaces available
 - **Interactive Q&A**: Ask follow-up questions about the summarized content
 - **Modular Architecture**: Clean, extensible codebase for easy customization
+- **Perfect Navigation**: Full button functionality and seamless user experience

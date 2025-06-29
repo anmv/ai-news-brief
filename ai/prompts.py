@@ -57,14 +57,27 @@ def create_summary_prompt(newsletter_data, date):
     )
     
     prompt = f"""
-    Summarize this TLDR AI newsletter from {date}.
-    Focus on the 3-5 biggest AI developments, including:
-    - Main innovations
-    - How businesses might use them
-    - How realistic they are
-    - Why they matter for AI teams
+    You are creating a strategic AI news briefing specifically for Applied Science Managers and Data Science Managers.
     
-    Use headings and bullet points. Keep it under 800 words.
+    Transform this generic TLDR AI newsletter from {date} into actionable management insights. Focus on the 3-5 most strategically important developments for team leaders.
+    
+    For each development, provide:
+    - <strong>Strategic Impact:</strong> Why this matters for Applied Science/Data Science teams
+    - <strong>Management Implications:</strong> Resource allocation, hiring needs, technology adoption decisions
+    - <strong>Implementation Reality:</strong> Timeline, feasibility, and what it means for current projects
+    - <strong>Competitive Positioning:</strong> How this affects your team's capabilities vs. industry standards
+    - <strong>Action Items:</strong> Specific recommendations for managers (explore, invest, ignore, prepare)
+    
+    AUDIENCE: Applied Science Managers and Data Science Managers who need to make strategic decisions about AI/ML technologies, team direction, and resource allocation.
+    
+    FORMATTING REQUIREMENTS - Generate clean HTML:
+    - Use <h2> for main section headers
+    - Use <h3> for sub-headers (numbered items like "1. Development Title")
+    - Use <strong> for emphasis instead of **bold**
+    - Use <p> for paragraphs
+    - Keep content concise and scannable for busy managers
+    - Under 800 words total
+    - Executive-level, strategic tone
     
     NEWSLETTER CONTENT:
     {content}

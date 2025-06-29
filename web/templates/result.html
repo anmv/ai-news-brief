@@ -11,11 +11,19 @@
     <h2>AI Briefing - {{ date }}</h2>
     
     {% if summary %}
-        <div style="background-color: #f8f8f8; padding: 1rem; border-radius: 4px; margin: 1rem 0; white-space: pre-wrap;">
-            {{ summary | safe }}
+        <div class="summary-container">
+            <div class="summary-header">
+                <h3>📊 Strategic AI News Summary</h3>
+            </div>
+            <div class="summary-content">
+                {{ summary | safe }}
+            </div>
         </div>
     {% else %}
-        <p>No summary was generated. Please try again.</p>
+        <div class="error-message">
+            <h3>⚠️ No Summary Available</h3>
+            <p>No summary was generated. Please try again.</p>
+        </div>
     {% endif %}
     
     {% if article_links %}

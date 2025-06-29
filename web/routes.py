@@ -7,6 +7,7 @@ from flask import render_template
 from web import app
 import main
 from ai.client import AIClient
+from utils.content import sanitize_ai_content
 
 @app.route('/')
 def index():
@@ -22,7 +23,10 @@ def generate_briefing():
         
         # Get newsletter data and create summary
         newsletter_data = main.collect_newsletter_data(ai_client)
-        summary = main.create_summary(newsletter_data, ai_client)
+        raw_summary = main.create_summary(newsletter_data, ai_client)
+        
+        # Clean and sanitize the AI-generated content
+        summary = sanitize_ai_content(raw_summary)
         
         # Display results
         return render_template(
