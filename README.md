@@ -1,6 +1,6 @@
-# AI Daily Briefing Engine
+# AI News Briefing Engine
 
-A command-line tool that automatically scrapes the latest AI news, digests the content of multiple articles, and generates a strategic summary tailored for an Applied Science Manager.
+A Python tool that automatically scrapes the latest AI news, digests the content of multiple articles, and generates strategic summaries tailored for Applied Science Managers. Available as both a command-line tool and web interface.
 
 ## Problem Statement
 
@@ -23,13 +23,14 @@ The application follows a three-step automated pipeline:
     -   `requests` & `BeautifulSoup4`: For web scraping and HTML parsing.
     -   `google-generativeai`: For interacting with the Gemini API.
     -   `python-dotenv`: For secure management of API keys.
+    -   `flask`: For the web interface.
 
 ## Setup & Usage
 
 **1. Clone the repository:**
 ```bash
-git clone [https://github.com/your-username/ai-summary-engine.git](https://github.com/your-username/ai-summary-engine.git)
-cd ai-summary-engine
+git clone https://github.com/christophercosler/ai-news-briefing.git
+cd ai-news-briefing
 ```
 
 **2. Create a virtual environment and install dependencies:**
@@ -59,11 +60,36 @@ python web_app.py
 ```
 Then open `http://127.0.0.1:5000` in your browser.
 
+## Project Structure
+
+```
+ai-news-briefing/
+├── main.py              # Command-line interface
+├── web_app.py           # Web interface launcher
+├── config.py            # Configuration settings
+├── requirements.txt     # Python dependencies
+├── ai/                  # AI client and prompts
+│   ├── client.py
+│   └── prompts.py
+├── newsletter/          # Newsletter fetching and parsing
+│   ├── fetcher.py
+│   └── parser.py
+├── articles/            # Article selection and extraction
+│   ├── selector.py
+│   └── extractor.py
+├── utils/               # Utility functions
+│   ├── http.py
+│   └── text.py
+└── web/                 # Flask web interface
+    ├── routes.py
+    └── templates/
+```
+
 ## Example Output
 
 ```
 ================================================================================
-AI DAILY BRIEFING
+AI BRIEFING - TLDR NEWSLETTER 2025-06-29
 ================================================================================
 
 Here is a summary of the key developments from today's articles:
@@ -79,7 +105,24 @@ Here is a summary of the key developments from today's articles:
 
 ================================================================================
 
-Interactive Q&A session started. Type 'quit' to exit.
+Q&A mode - type 'quit', 'exit', or 'q' to stop.
 
-Ask a question about the articles:
+Press Enter to start Q&A mode...
+
+Question about the newsletter:
 ```
+
+## Requirements
+
+- **Python 3.7+**
+- **Google Gemini API Key**: You'll need to sign up for Google AI Studio to get a free API key
+- **Internet connection**: Required for fetching newsletters and articles
+- **Local execution**: This tool runs locally on your machine (no cloud deployment included)
+
+## Features
+
+- **Intelligent Article Selection**: Uses AI to choose the most relevant articles from each newsletter
+- **Strategic Focus**: Summaries emphasize business impact, technical feasibility, and practical applications
+- **Dual Interface**: Both command-line and web-based interfaces available
+- **Interactive Q&A**: Ask follow-up questions about the summarized content
+- **Modular Architecture**: Clean, extensible codebase for easy customization
