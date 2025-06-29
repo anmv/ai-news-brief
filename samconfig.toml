@@ -1,0 +1,12 @@
+version = 0.1
+
+[default.deploy.parameters]
+stack_name = "sam-app"
+resolve_s3 = true
+s3_prefix = "sam-app"
+region = "us-east-1"
+profile = "personal"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+disable_rollback = true
+image_repositories = ["AINewsBriefingFunction=009770654509.dkr.ecr.us-east-1.amazonaws.com/samapp7427b055/ainewsbriefingfunctioncd9cf23drepo"]

@@ -7,6 +7,7 @@ from flask import Flask
 
 # Create Flask application instance
 app = Flask(__name__)
+# TODO: Replace SECRET_KEY with secure random key from environment variable in production
 app.config.update(
     SECRET_KEY="dev-key-change-in-production"
 )
