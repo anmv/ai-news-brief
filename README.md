@@ -117,7 +117,31 @@ Question about the newsletter:
 - **Python 3.7+**
 - **Google Gemini API Key**: You'll need to sign up for Google AI Studio to get a free API key
 - **Internet connection**: Required for fetching newsletters and articles
-- **Local execution**: This tool runs locally on your machine (no cloud deployment included)
+
+## Deployment Options
+
+### Local Execution
+Run locally on your machine using either:
+- **Command line**: `python main.py`
+- **Web interface**: `python web_app.py` then visit `http://127.0.0.1:5000`
+
+### Cloud Deployment (AWS Lambda) - CONTAINER READY
+Deploy to AWS Lambda using **Lambda Web Adapter** for serverless execution:
+- ✅ **Fully tested and ready** - All cloud readiness issues resolved
+- ✅ Uses the existing Flask web interface (no code changes needed)
+- ✅ Runs the same `/generate` endpoint in the cloud
+- ✅ Automatically scales and handles web requests
+- ✅ Enhanced weekend/holiday support (7-day newsletter lookback)
+- ✅ **Docker containerization complete** - Full end-to-end testing successful
+- 📋 See `CLOUD_READINESS.md`, `TESTING_PLAN.md`, and `DOCKER_SETUP.md` for deployment
+
+**Container Testing Results:**
+- ✅ Docker build successful with Lambda Web Adapter integration
+- ✅ Container runs identically to local Flask app
+- ✅ Real API key integration tested and working
+- ✅ Same newsletter processing results in container vs local
+- ✅ Network functionality verified (fetches newsletters and articles)
+- ✅ Ready for AWS Lambda deployment
 
 ## Features
 

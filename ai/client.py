@@ -44,6 +44,7 @@ class AIClient:
             if self.web_mode:
                 raise ApiKeyError(error_msg)
             else:
+                print(error_msg)
                 exit()
         
         genai.configure(api_key=api_key)
