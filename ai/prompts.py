@@ -57,28 +57,34 @@ def create_summary_prompt(newsletter_data, date):
     )
     
     prompt = f"""
-    You are creating a strategic AI news briefing specifically for Applied Science Managers and Data Science Managers.
+    Create a strategic AI news briefing for Applied Science Managers and Data Science Managers based on this TLDR AI newsletter from {date}.
+
+    CRITICAL: Preserve the actual news content - specific company names, product launches, research findings, and concrete developments. Don't turn everything into abstract concepts.
+
+    For each significant news item, provide:
     
-    Transform this generic TLDR AI newsletter from {date} into actionable management insights. Focus on the 3-5 most strategically important developments for team leaders.
-    
-    For each development, provide:
-    - <strong>Strategic Impact:</strong> Why this matters for Applied Science/Data Science teams
-    - <strong>Management Implications:</strong> Resource allocation, hiring needs, technology adoption decisions
-    - <strong>Implementation Reality:</strong> Timeline, feasibility, and what it means for current projects
-    - <strong>Competitive Positioning:</strong> How this affects your team's capabilities vs. industry standards
-    - <strong>Action Items:</strong> Specific recommendations for managers (explore, invest, ignore, prepare)
-    
-    AUDIENCE: Applied Science Managers and Data Science Managers who need to make strategic decisions about AI/ML technologies, team direction, and resource allocation.
-    
-    FORMATTING REQUIREMENTS - Generate clean HTML:
-    - Use <h2> for main section headers
-    - Use <h3> for sub-headers (numbered items like "1. Development Title")
-    - Use <strong> for emphasis instead of **bold**
-    - Use <p> for paragraphs
-    - Keep content concise and scannable for busy managers
-    - Under 800 words total
-    - Executive-level, strategic tone
-    
+    <h3>[Specific headline - use actual company/product names]</h3>
+    <p><strong>What Happened:</strong> [Detailed factual summary - provide comprehensive context about who did what, when, how, and with what specific details. For unfamiliar companies or concepts, include brief definitions (e.g., "CoreWeave, a cloud service provider specializing in AI infrastructure, announced..."). Include technical specifications, timelines, and background context.]</p>
+    <p><strong>Why It Matters:</strong> [Explain the strategic importance AND what specific problem this solves or opportunity it creates. Address both immediate business impact and longer-term implications for AI/ML teams and competitive positioning.]</p>
+    <p><strong>Management Action:</strong> [Specific next steps - evaluate, pilot, monitor, invest, or ignore - with clear rationale]</p>
+
+    WRITING GUIDELINES:
+    - Use actual company names (OpenAI, Google, Microsoft, Anthropic, etc.)
+    - For lesser-known companies, provide brief context (e.g., "Sakana AI, a Tokyo-based AI research company,...")
+    - Include specific products, features, numbers, dates, and technical details
+    - Preserve research findings and their implications
+    - Make "What Happened" sections comprehensive - don't just summarize, provide full context
+    - In "Why It Matters", always explain what problem is being solved or opportunity created
+
+    AUDIENCE: Technical managers who need comprehensive news facts AND strategic context to make informed decisions.
+
+    FORMATTING:
+    - Generate clean HTML with <h2>, <h3>, <p>, <strong> tags
+    - Start with <h2>AI News Briefing - {date}</h2>
+    - Under 1000 words total (expanded for more detail)
+    - Focus on 4-6 most important developments
+    - Professional, informative tone
+
     NEWSLETTER CONTENT:
     {content}
     """
