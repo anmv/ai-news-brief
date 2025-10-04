@@ -21,22 +21,25 @@
 ```dockerfile
 FROM public.ecr.aws/lambda/python:3.11
 
-# Install Lambda Web Adapter extension
-COPY --from=public.ecr.aws/awsguru/aws-lambda-adapter:0.7.0 /lambda-adapter /opt/extensions/lambda-adapter
-
 # Copy requirements and install dependencies
-COPY requirements.txt ${LAMBDA_TASK_ROOT}
-RUN pip install -r requirements.txt
+COPY requirements.txt ${LAMBDA_TASK_ROOT}/
+
+# Install dependencies using uv and then clean up
+RUN set -ex && \
+    # Install uv
+    curl -LsSf https://astral.sh/uv/install.sh | sh && \
+    # Use uv to install dependencies from requirements.txt
+    /root/.cargo/bin/uv pip install --system --no-cache -r ${LAMBDA_TASK_ROOT}/requirements.txt && \
+    # Clean up uv installation files
+    rm -rf /root/.cargo && \
+    # Remove pip as requested to reduce image size
+    rm -f /usr/local/bin/pip /usr/local/bin/pip3 /usr/local/bin/pip3.11
 
 # Copy application code
 COPY . ${LAMBDA_TASK_ROOT}
 
-# Set the command to run your Flask app
-CMD ["python", "web_app.py"]
-
-# Environment variables for Lambda Web Adapter
-ENV PORT=5000
-ENV AWS_LWA_INVOKE_MODE=response_stream
+# Set the Lambda handler
+CMD ["lambda_handler.lambda_handler"]
 ```
 
 ### 2. SAM Template (template.yaml)

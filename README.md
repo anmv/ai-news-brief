@@ -37,7 +37,7 @@ cd ai-news-briefing
 ```bash
 python -m venv env
 source env/bin/activate  # On Windows, use `env\Scripts\activate`
-pip install -r requirements.txt
+uv pip install -r requirements.txt
 ```
 
 **3. Set up your API Key:**
