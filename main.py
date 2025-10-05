@@ -6,6 +6,7 @@ June 2025 - Refactored Version
 
 import sys
 import textwrap
+import asyncio
 
 # Import modules from the refactored structure
 from ai.client import AIClient
@@ -14,6 +15,7 @@ from newsletter.parser import NewsletterParser
 from articles.selector import ArticleSelector
 from articles.extractor import extract_article_content
 from ai.prompts import create_summary_prompt, create_qa_prompt
+from telegram.client import send_message
 import config
 
 def collect_newsletter_data(ai_client):
@@ -142,9 +144,43 @@ def run_qa_mode(newsletter_data, ai_client):
             print(f"\nERROR: {e}")
             print("Might be API limits or connection issues.")
 
-def main():
+async def send_telegram_summary(summary, date):
     """
-    Main function that runs everything.
+    Sends the summary to Telegram users if enabled.
+
+    Args:
+        summary: The summary text to send.
+        date: The date of the newsletter.
+    """
+    if config.TELEGRAM_ENABLED:
+        if not config.TELEGRAM_BOT_TOKEN or not config.TELEGRAM_USER_IDS:
+            print("Telegram is enabled, but token or user IDs are missing.")
+            return
+
+        # Format the message with a title and pre-formatted text
+        message = f"<b>AI Briefing - {date}</b>\n\n<pre>{summary}</pre>"
+
+        # Create a list of tasks for sending messages
+        tasks = []
+        for user_id in config.TELEGRAM_USER_IDS:
+            if user_id:  # Ensure user_id is not an empty string
+                tasks.append(
+                    send_message(
+                        user_id=int(user_id),
+                        message_text=message,
+                        bot_token=config.TELEGRAM_BOT_TOKEN
+                    )
+                )
+
+        # Run all sending tasks concurrently
+        if tasks:
+            print(f"Sending summary to {len(tasks)} Telegram user(s)...")
+            await asyncio.gather(*tasks)
+            print("Summary sent successfully via Telegram.")
+
+async def main():
+    """
+    Main asynchronous function that runs everything.
     
     Returns:
         Exit code (0 for success, 1 for failure)
@@ -166,6 +202,9 @@ def main():
         print(summary)
         print("\n" + "="*80)
     
+        # Send summary via Telegram
+        await send_telegram_summary(summary, newsletter_data['date'])
+
         # Run Q&A mode
         run_qa_mode(newsletter_data, ai_client)
         
@@ -177,4 +216,5 @@ def main():
         return 1
 
 if __name__ == "__main__":
-    sys.exit(main())
+    # Run the main async function
+    sys.exit(asyncio.run(main()))
