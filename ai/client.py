@@ -2,8 +2,10 @@
 
 import os
 import google.generativeai as genai
+import requests
+from google.auth.transport.requests import Request as GoogleAuthRequest
 from dotenv import load_dotenv
-from config import GEMINI_MODEL, API_KEY_ENV_VAR
+from config import GEMINI_MODEL, API_KEY_ENV_VAR, PROXY_ENV_VAR
 
 class ApiKeyError(Exception):
     """Exception raised when API key is missing."""
@@ -36,7 +38,8 @@ class AIClient:
         """
         load_dotenv()
         api_key = os.getenv(API_KEY_ENV_VAR)
-        
+        proxy_url = os.getenv(PROXY_ENV_VAR)
+
         if not api_key:
             error_msg = f"ERROR: No API key found! Create a .env file with {API_KEY_ENV_VAR}=your_key_here"
             print(error_msg)
@@ -47,7 +50,18 @@ class AIClient:
                 print(error_msg)
                 exit()
         
-        genai.configure(api_key=api_key)
+        transport = None
+        if proxy_url:
+            print(f"Using proxy for Gemini API: {proxy_url}")
+            proxies = {
+                'http': proxy_url,
+                'https': proxy_url,
+            }
+            session = requests.Session()
+            session.proxies = proxies
+            transport = GoogleAuthRequest(session=session)
+
+        genai.configure(api_key=api_key, transport=transport)
         self.model = genai.GenerativeModel(GEMINI_MODEL)
         self.configured = True
         

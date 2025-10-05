@@ -16,3 +16,7 @@ API_KEY_ENV_VAR = "GEMINI_API_KEY"
 NEWSLETTER_EXTRACT_MAX_CHARS = 5000
 ARTICLE_EXTRACT_MAX_CHARS = 3000
 SUMMARY_CONTENT_MAX_CHARS = 15000
+
+# Proxy configuration for Gemini API
+# Use a custom environment variable to avoid conflicts with system-wide proxies
+PROXY_ENV_VAR = "HTTPS_PROXY_GEMINI"
