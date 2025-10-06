@@ -1,6 +1,5 @@
 """Functions for fetching newsletters from TLDR website."""
 
-import re
 from datetime import datetime, timedelta
 from utils.http import make_request
 

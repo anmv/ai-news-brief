@@ -1,6 +1,6 @@
 """Prompt template management for AI interactions."""
 
-from config import NEWSLETTER_EXTRACT_MAX_CHARS, SUMMARY_CONTENT_MAX_CHARS
+from config import SUMMARY_CONTENT_MAX_CHARS
 from utils.text import truncate_text
 
 def create_article_selection_prompt(links, newsletter_text, max_chars=None):

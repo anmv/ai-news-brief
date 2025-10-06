@@ -3,8 +3,6 @@ AWS Lambda handler for AI News Briefing
 Processes API Gateway events and returns AI-generated news briefings.
 """
 
-import json
-import os
 from dotenv import load_dotenv
 from jinja2 import Environment, FileSystemLoader
 import main
