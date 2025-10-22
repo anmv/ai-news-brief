@@ -7,7 +7,7 @@ load_dotenv()
 
 # Main model used for all operations
 # Use the most current version available
-GEMINI_MODEL = 'gemini-1.5-pro'
+GEMINI_MODEL = 'gemini-2.5-flash'
 
 # Alternative models if needed for specific purposes
 # GEMINI_LIGHT_MODEL = 'gemini-pro'  # Uncomment if needed

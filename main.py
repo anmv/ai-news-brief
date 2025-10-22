@@ -15,7 +15,7 @@ from newsletter.parser import NewsletterParser
 from articles.selector import ArticleSelector
 from articles.extractor import extract_article_content
 from ai.prompts import create_summary_prompt, create_qa_prompt
-from telegram.client import send_message
+from telegram_notifications.client import send_message
 import config
 
 def collect_newsletter_data(ai_client):
@@ -157,8 +157,8 @@ async def send_telegram_summary(summary, date):
             print("Telegram is enabled, but token or user IDs are missing.")
             return
 
-        # Format the message with a title and pre-formatted text
-        message = f"<b>AI Briefing - {date}</b>\n\n<pre>{summary}</pre>"
+        # Format the message - summary already contains HTML formatting
+        message = summary
 
         # Create a list of tasks for sending messages
         tasks = []
@@ -205,8 +205,8 @@ async def main():
         # Send summary via Telegram
         await send_telegram_summary(summary, newsletter_data['date'])
 
-        # Run Q&A mode
-        run_qa_mode(newsletter_data, ai_client)
+        # Сессия вопросов и ответов по новостям
+        # run_qa_mode(newsletter_data, ai_client)
         
         return 0
         

@@ -35,9 +35,9 @@ cd ai-news-briefing
 
 **2. Create a virtual environment and install dependencies:**
 ```bash
-python -m venv env
+uv init
 source env/bin/activate  # On Windows, use `env\Scripts\activate`
-uv pip install -r requirements.txt
+uv install
 ```
 
 **3. Set up your API Key:**
@@ -128,7 +128,7 @@ Question about the newsletter:
 ### Local Execution
 Run locally on your machine using either:
 - **Command line**: `python main.py`
-- **Web interface**: `python web_app.py` then visit `http://127.0.0.1:5000`
+- **Web interface**: `python web_app.py` then visit `http://127.0.0.1:9000`
 
 ### Cloud Deployment (AWS Lambda) - FULLY OPERATIONAL ✅
 Successfully deployed to AWS Lambda with **complete end-to-end functionality**:

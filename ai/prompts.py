@@ -57,16 +57,19 @@ def create_summary_prompt(newsletter_data, date):
     )
     
     prompt = f"""
-    Create a strategic AI news briefing for Applied Science Managers and Data Science Managers based on this TLDR AI newsletter from {date}.
+    Create a strategic AI news briefing for IT Specialists, Businessmen, and Programmers based on this TLDR AI newsletter. from {date}.
 
     CRITICAL: Preserve the actual news content - specific company names, product launches, research findings, and concrete developments. Don't turn everything into abstract concepts.
 
     For each significant news item, provide:
-    
-    <h3>[Specific headline - use actual company/product names]</h3>
-    <p><strong>What Happened:</strong> [Detailed factual summary - provide comprehensive context about who did what, when, how, and with what specific details. For unfamiliar companies or concepts, include brief definitions (e.g., "CoreWeave, a cloud service provider specializing in AI infrastructure, announced..."). Include technical specifications, timelines, and background context.]</p>
-    <p><strong>Why It Matters:</strong> [Explain the strategic importance AND what specific problem this solves or opportunity it creates. Address both immediate business impact and longer-term implications for AI/ML teams and competitive positioning.]</p>
-    <p><strong>Management Action:</strong> [Specific next steps - evaluate, pilot, monitor, invest, or ignore - with clear rationale]</p>
+
+    <b>🔹 [Specific headline - use actual company/product names]</b>
+
+    <b>Что произошло:</b> [Detailed factual summary - provide comprehensive context about who did what, when, how, and with what specific details. For unfamiliar companies or concepts, include brief definitions (e.g., "CoreWeave, a cloud service provider specializing in AI infrastructure, announced..."). Include technical specifications, timelines, and background context.]
+
+    <b>Почему важно:</b> [Explain the strategic importance AND what specific problem this solves or opportunity it creates. Address both immediate business impact and longer-term implications for AI/ML teams and competitive positioning.]
+
+    <b>Действия:</b> [Specific next steps - evaluate, pilot, monitor, invest, or ignore - with clear rationale]
 
     WRITING GUIDELINES:
     - Use actual company names (OpenAI, Google, Microsoft, Anthropic, etc.)
@@ -75,15 +78,20 @@ def create_summary_prompt(newsletter_data, date):
     - Preserve research findings and their implications
     - Make "What Happened" sections comprehensive - don't just summarize, provide full context
     - In "Why It Matters", always explain what problem is being solved or opportunity created
+    - Выдавать пользователю новости на русском языке
 
-    AUDIENCE: Technical managers who need comprehensive news facts AND strategic context to make informed decisions.
+    AUDIENCE: Technical managers, IT specialists, programmers who need comprehensive news facts AND strategic context to make informed decisions.
 
     FORMATTING:
-    - Generate clean HTML with <h2>, <h3>, <p>, <strong> tags
-    - Start with <h2>AI News Briefing - {date}</h2>
-    - Under 1000 words total (expanded for more detail)
-    - Focus on 4-6 most important developments
+    - Generate clean text with ONLY <b> for bold and <i> for italic when needed
+    - Start with: <b>📰 AI News Briefing - {date}</b>
+    - Use emoji 🔹 for bullet points/news items
+    - Separate sections with double line breaks (NOT <br> tags!)
+    - Keep under 800 words to fit Telegram message limits
+    - Focus on 4-5 most important developments
     - Professional, informative tone
+    - NO HTML tags except <b> and <i>
+    - NO <p>, <br>, <div>, <h1-h6> or any other HTML tags
 
     NEWSLETTER CONTENT:
     {content}
