@@ -7,23 +7,27 @@ June 2025 - Refactored Version
 import sys
 import textwrap
 import asyncio
+from datetime import date, timedelta
+from pathlib import Path
 
 # Import modules from the refactored structure
 from ai.client import AIClient
-from newsletter.fetcher import get_latest_newsletter_url, fetch_newsletter
+from newsletter.fetcher import get_newsletter_url_for, fetch_newsletter
 from newsletter.parser import NewsletterParser
 from articles.selector import ArticleSelector
 from articles.extractor import extract_article_content
 from ai.prompts import create_summary_prompt, create_qa_prompt
 from telegram_notifications.client import send_message
+from utils.run_state import RunStateStore
 import config
 
-def collect_newsletter_data(ai_client):
+def collect_newsletter_data(ai_client, target_date: date):
     """
     Collect newsletter and article data.
     
     Args:
         ai_client: The AI client for article selection
+        target_date: Date for which the newsletter must be retrieved
         
     Returns:
         Dictionary with newsletter data
@@ -32,10 +36,12 @@ def collect_newsletter_data(ai_client):
         RuntimeError: If newsletter can't be found or fetched
     """
     # Get newsletter URL
-    newsletter_url = get_latest_newsletter_url()
+    newsletter_url = get_newsletter_url_for(target_date)
     if not newsletter_url:
-        # Fail directly instead of providing fallbacks that may hide issues
-        raise RuntimeError("No newsletter found for today or yesterday.")
+        # Explicitly fail if the exact date is unavailable
+        raise RuntimeError(
+            f"No newsletter found for {target_date.isoformat()}."
+        )
         
     # Get newsletter content
     html_content = fetch_newsletter(newsletter_url)
@@ -45,7 +51,13 @@ def collect_newsletter_data(ai_client):
     # Parse newsletter
     parser = NewsletterParser(html_content)
     newsletter_text = parser.get_newsletter_text()
-    date = parser.extract_date(newsletter_url)
+    date_str = parser.extract_date(newsletter_url)
+    expected_date = target_date.isoformat()
+    if date_str != expected_date:
+        raise RuntimeError(
+            "Newsletter date mismatch: "
+            f"expected {expected_date}, got {date_str or 'unknown'}."
+        )
     
     # Extract potential links
     potential_links = parser.extract_links()
@@ -74,7 +86,7 @@ def collect_newsletter_data(ai_client):
     all_content += "\n".join(article_contents)
     
     return {
-        'date': date,
+        'date': date_str,
         'url': newsletter_url,
         'content': all_content,
         'article_links': relevant_links
@@ -144,39 +156,45 @@ def run_qa_mode(newsletter_data, ai_client):
             print(f"\nERROR: {e}")
             print("Might be API limits or connection issues.")
 
-async def send_telegram_summary(summary, date):
+async def send_telegram_summary(summary, date_str):
     """
     Sends the summary to Telegram users if enabled.
 
     Args:
         summary: The summary text to send.
-        date: The date of the newsletter.
+        date_str: ISO date string of the newsletter.
     """
-    if config.TELEGRAM_ENABLED:
-        if not config.TELEGRAM_BOT_TOKEN or not config.TELEGRAM_USER_IDS:
-            print("Telegram is enabled, but token or user IDs are missing.")
-            return
+    if not config.TELEGRAM_ENABLED:
+        print("Telegram notifications disabled; skipping send.")
+        return False
 
-        # Format the message - summary already contains HTML formatting
-        message = summary
+    if not config.TELEGRAM_BOT_TOKEN or not config.TELEGRAM_USER_IDS:
+        print("Telegram is enabled, but token or user IDs are missing.")
+        return False
 
-        # Create a list of tasks for sending messages
-        tasks = []
-        for user_id in config.TELEGRAM_USER_IDS:
-            if user_id:  # Ensure user_id is not an empty string
-                tasks.append(
-                    send_message(
-                        user_id=int(user_id),
-                        message_text=message,
-                        bot_token=config.TELEGRAM_BOT_TOKEN
-                    )
+    # Format the message - summary already contains HTML formatting
+    message = summary
+
+    # Create a list of tasks for sending messages
+    tasks = []
+    for user_id in config.TELEGRAM_USER_IDS:
+        if user_id:  # Ensure user_id is not an empty string
+            tasks.append(
+                send_message(
+                    user_id=int(user_id),
+                    message_text=message,
+                    bot_token=config.TELEGRAM_BOT_TOKEN
                 )
+            )
 
-        # Run all sending tasks concurrently
-        if tasks:
-            print(f"Sending summary to {len(tasks)} Telegram user(s)...")
-            await asyncio.gather(*tasks)
-            print("Summary sent successfully via Telegram.")
+    if not tasks:
+        print("No valid Telegram user IDs configured; skipping send.")
+        return False
+
+    print(f"Sending summary for {date_str} to {len(tasks)} Telegram user(s)...")
+    await asyncio.gather(*tasks)
+    print("Summary sent successfully via Telegram.")
+    return True
 
 async def main():
     """
@@ -185,31 +203,48 @@ async def main():
     Returns:
         Exit code (0 for success, 1 for failure)
     """
+    today = date.today() - timedelta(days=1)
+    # today = date.today()
+    state_store = RunStateStore(Path(config.RUN_STATE_FILE))
+
+    if state_store.has_run_for(today):
+        print(f"Newsletter for {today.isoformat()} already sent. Exiting.")
+        return 0
+
     try:
         # Initialize AI client
         ai_client = AIClient()
-        
+
         # Collect newsletter data
-        newsletter_data = collect_newsletter_data(ai_client)
-        
+        newsletter_data = collect_newsletter_data(ai_client, today)
+
         # Create summary
         summary = create_summary(newsletter_data, ai_client)
-        
+
         # Show results
-        print("\n" + "="*80)
+        print("\n" + "=" * 80)
         print(f"AI BRIEFING - TLDR NEWSLETTER {newsletter_data['date']}")
-        print("="*80)
+        print("=" * 80)
         print(summary)
-        print("\n" + "="*80)
-    
+        print("\n" + "=" * 80)
+
         # Send summary via Telegram
-        await send_telegram_summary(summary, newsletter_data['date'])
+        sent = await send_telegram_summary(summary, newsletter_data['date'])
+        if sent:
+            state_store.mark_run(today)
+        else:
+            print("Telegram delivery did not complete; state not recorded.")
 
         # Сессия вопросов и ответов по новостям
         # run_qa_mode(newsletter_data, ai_client)
-        
+
         return 0
-        
+
+    except RuntimeError as exc:
+        print(f"\nINFO: {exc}")
+        print("No action required today.")
+        return 0
+
     except Exception as e:
         print(f"\nERROR: {str(e)}")
         print("The program encountered an error and cannot continue.")

@@ -40,3 +40,6 @@ TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 # These are the integer IDs of the users, not their usernames.
 # It is recommended to set this as an environment variable.
 TELEGRAM_USER_IDS = os.getenv("TELEGRAM_USER_IDS", "").split(',')
+
+# State tracking for daily TLDR dispatches
+RUN_STATE_FILE = os.getenv("RUN_STATE_FILE", "run_state.json")
