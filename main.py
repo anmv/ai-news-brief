@@ -209,11 +209,11 @@ async def process_and_send_for_date(
         newsletter_data = collect_newsletter_data(ai_client, target_date)
         summary = create_summary(newsletter_data, ai_client)
 
-        print("\n" + "=" * 80)
-        print(f"AI BRIEFING - TLDR NEWSLETTER {newsletter_data['date']}")
-        print("=" * 80)
-        print(summary)
-        print("\n" + "=" * 80)
+        # print("\n" + "=" * 80)
+        # print(f"AI BRIEFING - TLDR NEWSLETTER {newsletter_data['date']}")
+        # print("=" * 80)
+        # print(summary)
+        # print("\n" + "=" * 80)
 
         sent = await send_telegram_summary(summary, newsletter_data["date"])
         if sent:
