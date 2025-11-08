@@ -21,6 +21,8 @@ from telegram_notifications.client import send_message
 from utils.run_state import RunStateStore
 import config
 
+WEEKEND_DAYS = {5, 6}  # 5 = Saturday, 6 = Sunday
+
 def collect_newsletter_data(ai_client, target_date: date):
     """
     Collect newsletter and article data.
@@ -196,57 +198,90 @@ async def send_telegram_summary(summary, date_str):
     print("Summary sent successfully via Telegram.")
     return True
 
-async def main():
-    """
-    Main asynchronous function that runs everything.
-    
-    Returns:
-        Exit code (0 for success, 1 for failure)
-    """
-    today = date.today() - timedelta(days=1)
-    # today = date.today()
-    state_store = RunStateStore(Path(config.RUN_STATE_FILE))
-
-    if state_store.has_run_for(today):
-        print(f"Newsletter for {today.isoformat()} already sent. Exiting.")
-        return 0
-
+async def process_and_send_for_date(
+    target_date: date,
+    ai_client: AIClient,
+    state_store: RunStateStore,
+) -> bool:
+    """Process newsletter workflow for a single date."""
+    print(f"\n=== Обработка новостей за {target_date.isoformat()} началась ===")
     try:
-        # Initialize AI client
-        ai_client = AIClient()
-
-        # Collect newsletter data
-        newsletter_data = collect_newsletter_data(ai_client, today)
-
-        # Create summary
+        newsletter_data = collect_newsletter_data(ai_client, target_date)
         summary = create_summary(newsletter_data, ai_client)
 
-        # Show results
         print("\n" + "=" * 80)
         print(f"AI BRIEFING - TLDR NEWSLETTER {newsletter_data['date']}")
         print("=" * 80)
         print(summary)
         print("\n" + "=" * 80)
 
-        # Send summary via Telegram
-        sent = await send_telegram_summary(summary, newsletter_data['date'])
+        sent = await send_telegram_summary(summary, newsletter_data["date"])
         if sent:
-            state_store.mark_run(today)
-        else:
-            print("Telegram delivery did not complete; state not recorded.")
+            state_store.mark_run(target_date)
+            print(f"Статус: рассылка за {target_date.isoformat()} завершена.")
+            return True
 
-        # Сессия вопросов и ответов по новостям
-        # run_qa_mode(newsletter_data, ai_client)
-
-        return 0
+        print(
+            "Telegram delivery did not complete; state not recorded. "
+            f"Пропустите дату {target_date.isoformat()} вручную при необходимости."
+        )
+        return False
 
     except RuntimeError as exc:
-        print(f"\nINFO: {exc}")
-        print("No action required today.")
+        print(f"INFO: {exc}")
+        print(
+            f"Новостей за {target_date.isoformat()} нет или источник недоступен. "
+            "Состояние не обновлено."
+        )
+        return False
+
+async def main():
+    """
+    Main asynchronous function that runs everything.
+
+    Returns:
+        Exit code (0 for success, 1 for failure)
+    """
+    state_store = RunStateStore(Path(config.RUN_STATE_FILE))
+    end_date = date.today()
+    last_run_date = state_store.get_last_run_date()
+
+    if last_run_date is None:
+        start_date = end_date - timedelta(days=7)
+    else:
+        start_date = last_run_date + timedelta(days=1)
+
+    if start_date > end_date:
+        print(
+            "Актуальных дат для обработки нет. Последняя рассылка уже отправлена."
+        )
         return 0
 
-    except Exception as e:
-        print(f"\nERROR: {str(e)}")
+    dates_to_process = []
+    current_date = start_date
+    while current_date <= end_date:
+        if current_date.weekday() not in WEEKEND_DAYS:
+            dates_to_process.append(current_date)
+        current_date += timedelta(days=1)
+
+    if not dates_to_process:
+        print(
+            "Нет новых рабочих дней для обработки. Все рассылки актуальны."
+        )
+        return 0
+
+    print("Даты к обработке:", ", ".join(d.isoformat() for d in dates_to_process))
+
+    try:
+        ai_client = AIClient()
+        for index, target_date in enumerate(dates_to_process):
+            await process_and_send_for_date(target_date, ai_client, state_store)
+            if index < len(dates_to_process) - 1:
+                await asyncio.sleep(10)
+        return 0
+
+    except Exception as exc:
+        print(f"\nERROR: {str(exc)}")
         print("The program encountered an error and cannot continue.")
         return 1
 

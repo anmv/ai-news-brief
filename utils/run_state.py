@@ -27,6 +27,28 @@ class RunStateStore:
         dates[target_date.isoformat()] = True
         self._write_state(state)
 
+    def get_last_run_date(self) -> date | None:
+        """Return the most recent recorded run date, or ``None`` if unavailable."""
+        state = self._read_state()
+        dates = state.get("dates")
+        if not dates:
+            return None
+
+        parsed_dates = []
+        for date_str, completed in dates.items():
+            if not completed:
+                continue
+            try:
+                parsed_dates.append(date.fromisoformat(date_str))
+            except ValueError:
+                # Skip malformed entries instead of failing the entire lookup.
+                continue
+
+        if not parsed_dates:
+            return None
+
+        return max(parsed_dates)
+
     # Internal helpers -------------------------------------------------
     def _read_state(self) -> Dict[str, Dict[str, bool]]:
         if not self.path.exists():

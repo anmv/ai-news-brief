@@ -1,0 +1,52 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__context7__resolve-library-id",
+      "mcp__context7__get-library-docs",
+      "mcp__sequential-thinking__sequentialthinking",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:docs.telethon.dev)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(poetry run ruff:*)",
+      "WebFetch(domain:docs.djangoproject.com)",
+      "Bash(python -m py_compile:*)",
+      "Bash(grep:*)",
+      "Bash(poetry run mypy:*)",
+      "Bash(python:*)",
+      "WebSearch",
+      "WebFetch(domain:tl.telethon.dev)",
+      "mcp__postgres__query",
+      "Bash(poetry add:*)",
+      "Bash(find:*)",
+      "Bash(xargs:*)",
+      "WebFetch(domain:core.telegram.org)"
+    ],
+    "deny": [
+      "Bash(cat .env)",
+      "Bash(nano .env)",
+      "Read(.env.prod_ml)",
+      "Read(.env.prod_nk)",
+      "Read(.env.dm)",
+      "Read(.env)",
+      "Read(aicommenting-51500d27339f.json)",
+      "Bash(cat aicommenting-51500d27339f.json)",
+      "Bash(nano aicommenting-51500d27339f.json)",
+      "Bash(rm:*)",
+      "Bash(rmdir:*)",
+      "Bash(sudo:*)",
+      "Bash(su:*)",
+      "Bash(chown:*)",
+      "Bash(chmod:*)",
+      "Bash(passwd:*)",
+      "Bash(usermod:*)",
+      "Bash(userdel:*)",
+      "Bash(groupdel:*)"
+    ],
+    "ask": []
+  },
+  "enabledMcpjsonServers": [
+    "postgres"
+  ],
+  "outputStyle": "default",
+  "disableBypassPermissionsMode": "disable"
+}
