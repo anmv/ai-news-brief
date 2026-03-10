@@ -83,15 +83,15 @@ def create_summary_prompt(newsletter_data, date):
     <b>Почему это важно:</b> [Кратко объясни значимость новости без лишней аналитики]
 
     ФОРМАТИРОВАНИЕ:
-    - Generate clean text with ONLY <b> for bold and <i> for italic when needed
-    - Start with: <b>📰 AI News Briefing - {date}</b>
-    - Use emoji 🔹 for bullet points/news items
-    - Separate sections with double line breaks (NOT <br> tags!)
-    - Keep under 800 words to fit Telegram message limits
-    - Focus on 3-5 most important developments
-    - Professional, informative tone
-    - NO HTML tags except <b> and <i>
-    - NO <p>, <br>, <div>, <h1-h6> or any other HTML tags
+    - генерируй чистый текст, используя только теги <b> для жирного и <i> для курсива при необходимости
+    - начни с заголовка: <b>📰 Краткая AI-сводка - {date}</b>
+    - используй эмодзи 🔹 для отдельных новостей
+    - разделяй блоки двойным переносом строки, не используй <br> теги
+    - общий объём держи в пределах 800 слов, чтобы сообщение помещалось в Telegram
+    - сфокусируйся на 3-5 самых важных новостях
+    - тон должен быть профессиональным, информативным и понятным
+    - не используй HTML-теги, кроме <b> и <i>
+    - не используй <p>, <br>, <div>, <h1-h6> и любые другие HTML-теги
 
     МАТЕРИАЛЫ РАССЫЛКИ:
     {content}
@@ -117,15 +117,18 @@ def create_qa_prompt(question, newsletter_content, date):
     )
     
     prompt = f"""
-    Answer this question about the TLDR AI newsletter from {date}.
-    First try to answer using the newsletter content.
-    If the newsletter doesn't contain information to answer the question, use your general knowledge to provide a helpful response.
-    Be concise but thorough.
+    Ответь на вопрос по выпуску TLDR AI от {date}.
     
-    NEWSLETTER CONTENT:
+    Сначала постарайся ответить, опираясь на материалы рассылки.
+    Если в рассылке нет информации для точного ответа, можно использовать общие знания, чтобы дать полезный и корректный ответ.
+    
+    Пиши по-русски.
+    Отвечай кратко, но содержательно.
+    
+    МАТЕРИАЛЫ РАССЫЛКИ:
     {truncated_content}
     
-    QUESTION:
+    ВОПРОС:
     {question}
     """
     
