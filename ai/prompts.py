@@ -57,43 +57,43 @@ def create_summary_prompt(newsletter_data, date):
     )
     
     prompt = f"""
-    Create a strategic AI news briefing for IT Specialists, Businessmen, and Programmers based on this TLDR AI newsletter. from {date}.
+    Сделай краткую новостную сводку по материалам TLDR AI за {date}.
 
-    CRITICAL: Preserve the actual news content - specific company names, product launches, research findings, and concrete developments. Don't turn everything into abstract concepts.
+    Пиши полностью на русском языке.
 
-    For each significant news item, provide:
+    Главная задача:
+    - выбрать 3-5 самых важных новостей;
+    - для каждой новости кратко и ясно объяснить, что произошло;
+    - для каждой новости кратко объяснить, почему это важно.
 
-    <b>🔹 [Specific headline - use actual company/product names]</b>
+    КРИТИЧЕСКИ ВАЖНО:
+    - сохраняй конкретику: названия компаний, продуктов, моделей, исследований, даты, цифры и ключевые факты;
+    - не превращай новости в абстрактные рассуждения;
+    - не добавляй блок с действиями, советами или рекомендациями;
+    - не раздувай текст лишним контекстом;
+    - если компания или продукт малоизвестны, можно очень кратко пояснить, кто это;
+    - не выдумывай детали, которых нет в исходном тексте.
 
-    <b>Что произошло:</b> [Detailed factual summary - provide comprehensive context about who did what, when, how, and with what specific details. For unfamiliar companies or concepts, include brief definitions (e.g., "CoreWeave, a cloud service provider specializing in AI infrastructure, announced..."). Include technical specifications, timelines, and background context.]
+    СТРУКТУРА КАЖДОЙ НОВОСТИ:
 
-    <b>Почему важно:</b> [Explain the strategic importance AND what specific problem this solves or opportunity it creates. Address both immediate business impact and longer-term implications for AI/ML teams and competitive positioning.]
+    <b>🔹 [Короткий заголовок с названием компании / продукта]</b>
 
-    <b>Действия:</b> [Specific next steps - evaluate, pilot, monitor, invest, or ignore - with clear rationale]
+    <b>Что произошло:</b> [Краткое фактическое описание новости с ключевыми деталями]
 
-    WRITING GUIDELINES:
-    - Use actual company names (OpenAI, Google, Microsoft, Anthropic, etc.)
-    - For lesser-known companies, provide brief context (e.g., "Sakana AI, a Tokyo-based AI research company,...")
-    - Include specific products, features, numbers, dates, and technical details
-    - Preserve research findings and their implications
-    - Make "What Happened" sections comprehensive - don't just summarize, provide full context
-    - In "Why It Matters", always explain what problem is being solved or opportunity created
-    - Выдавать пользователю новости на русском языке
+    <b>Почему это важно:</b> [Кратко объясни значимость новости без лишней аналитики]
 
-    AUDIENCE: Technical managers, IT specialists, programmers who need comprehensive news facts AND strategic context to make informed decisions.
-
-    FORMATTING:
+    ФОРМАТИРОВАНИЕ:
     - Generate clean text with ONLY <b> for bold and <i> for italic when needed
     - Start with: <b>📰 AI News Briefing - {date}</b>
     - Use emoji 🔹 for bullet points/news items
     - Separate sections with double line breaks (NOT <br> tags!)
     - Keep under 800 words to fit Telegram message limits
-    - Focus on 4-5 most important developments
+    - Focus on 3-5 most important developments
     - Professional, informative tone
     - NO HTML tags except <b> and <i>
     - NO <p>, <br>, <div>, <h1-h6> or any other HTML tags
 
-    NEWSLETTER CONTENT:
+    МАТЕРИАЛЫ РАССЫЛКИ:
     {content}
     """
     
